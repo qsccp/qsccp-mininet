@@ -32,7 +32,7 @@ from minindn.util import MiniNDNCLI, getPopen
 from minindn.apps.nfd import Nfd
 from minindn.helpers.nfdc import Nfdc
 
-PREFIX = "/example"
+PREFIX = "/A"
 
 def printOutput(output):
     _out = output.decode("utf-8").split("\n")
@@ -49,11 +49,9 @@ def run():
     # add hosts
     a = topo.addHost('a')
     b = topo.addHost('b')
-    c = topo.addHost('c')
 
     # add links
-    topo.addLink(a, b, delay='10ms', bw=2.5) # bw = bandwidth
-    topo.addLink(b, c, delay='10ms', bw=2.5)
+    topo.addLink(a, b, delay='10ms', bw=10) # bw = bandwidth
     
     info(topo.links(withInfo=True))
 
@@ -61,8 +59,8 @@ def run():
     ndn.start()
 
     # configure and start nfd on each node
-    info("Configuring NFD111\n")
-    AppManager(ndn, ndn.net.hosts, Nfd, logLevel="DEBUG")
+    info("Configuring NFD\n")
+    AppManager(ndn, ndn.net.hosts, Nfd, logLevel="INFO")
 
     """
     There are multiple ways of setting up routes in Mini-NDN
@@ -80,37 +78,29 @@ def run():
         info(f"Setting up route from {node1} to {node2} with bandwidth {bandwidth}\n")
         Nfdc.createFace(host1, interface_ip, bandwidth=bandwidth)
         Nfdc.registerRoute(host1, PREFIX, interface_ip, cost=0)
-    # links = {"a":["b"], "b":["c"]}
-    # for first in links:
-    #     for second in links[first]:
-    #         host1 = ndn.net[first]
-    #         host2 = ndn.net[second]
-    #         interface = host2.connectionsTo(host1)[0][0]
-    #         interface_ip = interface.IP()
-    #         Nfdc.createFace(host1, interface_ip)
-    #         Nfdc.registerRoute(host1, PREFIX, interface_ip, cost=0)
 
-    # Start ping server
-    info("Starting pings...\n")
-    pingserver_log = open("{}/c/ndnpingserver.log".format(ndn.workDir), "w")
-    getPopen(ndn.net["c"], "ndnpingserver {}".format(PREFIX), stdout=pingserver_log,\
-             stderr=pingserver_log)
+    # Start cc server
+    info("Starting cc...\n")
+    qsccp_server_log = open(f"{ndn.workDir}/qsccp-demo/qsccp-server.log", "w")
+    getPopen(ndn.net["b"], "cc-producer --prefix {}".format(PREFIX), stdout=qsccp_server_log,\
+             stderr=qsccp_server_log)
 
-    # start ping client
-    ping1 = getPopen(ndn.net["a"], "ndnping {} -c 5".format(PREFIX), stdout=PIPE, stderr=PIPE)
+    # start cc client
+    qsccp_client_log = open(f"{ndn.workDir}/qsccp-demo/qsccp-client.log", "w")
+    ping1 = getPopen(ndn.net["a"], "qsccp-client --prefix {} --timingStop 10000".format(PREFIX), stdout=qsccp_client_log, stderr=qsccp_client_log)
     ping1.wait()
-    printOutput(ping1.stdout.read())
+    # printOutput(ping1.stdout.read())
 
-    interface = ndn.net["b"].connectionsTo(ndn.net["a"])[0][0]
-    info("Failing link\n") # failing link by setting link loss to 100%
-    interface.config(delay="10ms", bw=10, loss=100)
-    info ("\n starting ping2 client \n")
+    # interface = ndn.net["b"].connectionsTo(ndn.net["a"])[0][0]
+    # info("Failing link\n") # failing link by setting link loss to 100%
+    # interface.config(delay="10ms", bw=10, loss=100)
+    # info ("\n starting ping2 client \n")
 
-    ping2 = getPopen(ndn.net["a"], "ndnping {} -c 5".format(PREFIX), stdout=PIPE, stderr=PIPE)
-    ping2.wait()
-    printOutput(ping2.stdout.read())
+    # ping2 = getPopen(ndn.net["a"], "ndnping {} -c 5".format(PREFIX), stdout=PIPE, stderr=PIPE)
+    # ping2.wait()
+    # printOutput(ping2.stdout.read())
 
-    interface.config(delay="10ms", bw=10, loss=0) # bringing back the link
+    # interface.config(delay="10ms", bw=10, loss=0) # bringing back the link
 
     info("\nExperiment Completed!\n")
     MiniNDNCLI(ndn.net)

@@ -295,6 +295,7 @@ class Minindn(object):
             host.cmd('export HOME={} && cd ~'.format(homeDir))
 
     def nfdcBatchProcessing(self, station, faces):
+        print("???")
         # Input format: [IP, protocol, isPermanent]
         batch_file = open("{}/{}/nfdc.batch".format(Minindn.workDir, station.name), "w")
         lines = []
@@ -370,5 +371,6 @@ class Minindn(object):
                 else:
                     created_faces[nodeB].append(nodeALink)
         for station_name in batch_faces.keys():
+            print("========= {} =========".format(station_name))
             self.nfdcBatchProcessing(self.net[station_name], batch_faces[station_name])
         return created_faces

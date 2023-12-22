@@ -36,6 +36,7 @@ DEP_INFO=(
   ["CXX"]="ndn-cxx,ndn-cxx,libndn-cxx-dev,https://github.com/named-data/ndn-cxx.git,ndn-cxx"
   ["NFD"]="NFD,NFD,nfd,https://github.com/named-data/NFD.git,NFD"
   ["PSYNC"]="PSync,PSync,libpsync-dev,https://github.com/named-data/PSync.git,PSync"
+  ["CHRONOSYNC"]="ChronoSync,ChronoSync,ChronoSync,https://github.com/named-data/ChronoSync.git"
   ["NLSR"]="NLSR,NLSR,nlsr,https://github.com/named-data/NLSR.git,NLSR"
   ["TOOLS"]="ndn-tools,NDN Essential Tools,ndn-tools,https://github.com/named-data/ndn-tools.git,ndn-tools"
   ["TRAFFIC"]="ndn-traffic-generator,NDN Traffic Generator,ndn-traffic-generator,https://github.com/named-data/ndn-traffic-generator.git,ndn-traffic-generator"
@@ -233,7 +234,7 @@ if [[ $PPA_AVAIL -ne 1 ]] || [[ $NO_PPA -eq 1 ]]; then
 fi
 
 # dep install order, excluding ndn-cxx
-DEPLIST=(NFD PSYNC NLSR TOOLS TRAFFIC INFOEDIT MININET)
+DEPLIST=(NFD PSYNC CHRONOSYNC NLSR TOOLS TRAFFIC INFOEDIT MININET)
 if [[ $NO_WIFI -ne 1 ]]; then
   DEPLIST+=(MNWIFI)
 fi

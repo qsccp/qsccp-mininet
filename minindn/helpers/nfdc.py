@@ -76,11 +76,12 @@ class Nfdc(object):
         Minindn.sleep(SLEEP_TIME)
 
     @staticmethod
-    def createFace(node, remoteNodeAddress, protocol='udp', isPermanent=False, allowExisting=True):
+    def createFace(node, remoteNodeAddress, protocol=PROTOCOL_UDP, isPermanent=False, allowExisting=True, bandwidth=-1):
         '''Create face in node's NFD instance. Returns FaceID of created face or -1 if failed.'''
-        cmd = ('nfdc face create {}://{} {}'.format(
+        cmd = ('nfdc face create {}://{}{} persistency {}'.format(
             protocol,
             remoteNodeAddress,
+            f" bandwidth {int(bandwidth)}" if bandwidth > 0 else "",
             'permanent' if isPermanent else 'persistent'
         ))
         output = node.cmd(cmd)
@@ -93,7 +94,7 @@ class Nfdc(object):
         return -1
 
     @staticmethod
-    def destroyFace(node, remoteNode, protocol='udp'):
+    def destroyFace(node, remoteNode, protocol=PROTOCOL_UDP):
         if remoteNode.isdigit() and not protocol == "fd":
             debug(node.cmd('nfdc face destroy {}'.format(protocol, remoteNode)))
         else:
@@ -114,7 +115,7 @@ class Nfdc(object):
         Minindn.sleep(SLEEP_TIME)
 
     @staticmethod
-    def getFaceId(node, remoteNodeAddress, localEndpoint=None, protocol="udp", portNum="6363"):
+    def getFaceId(node, remoteNodeAddress, localEndpoint=None, protocol=PROTOCOL_UDP, portNum="6363"):
         '''Returns the faceId for a remote node based on FaceURI, or -1 if a face is not found'''
         #Should this be cached or is the hit not worth it?
         local = ""

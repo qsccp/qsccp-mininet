@@ -16,3 +16,7 @@ dl
 
 # Vagrant
 .vagrant
+
+venv/
+.vscode
+compare_data*

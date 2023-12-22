@@ -27,7 +27,7 @@ from minindn.minindn import Minindn
 
 class Nfd(Application):
 
-    def __init__(self, node, logLevel='NONE', csSize=65536,
+    def __init__(self, node, logLevel='NONE', csSize=0,
                  csPolicy='lru', csUnsolicitedPolicy='drop-all'):
         Application.__init__(self, node)
 
