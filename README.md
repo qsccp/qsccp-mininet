@@ -1,32 +1,43 @@
-Mini-NDN
-========
+# QoS-aware Congestion Control Protocol (QSCCP) for ICN
 
-If you are new to the NDN community of software generally, read the
-[Contributor's Guide](https://github.com/named-data/.github/blob/master/CONTRIBUTING.md).
+### Pull Code：
 
-### What is Mini-NDN?
+   ```bash
+   git clone https://github.com/Enidsky/qsccp-mininet.git
+   cd qsccp-mininet
+   git submodule update --init --recursive
+   ```
 
-Mini-NDN is a lightweight networking emulation tool that enables testing, experimentation, and
-research on the NDN platform based on [Mininet](https://github.com/mininet/mininet).
-Mini-NDN uses the NDN libraries, NFD, NLSR, and tools released by the
-[NDN project](http://named-data.net/codebase/platform/) to emulate an NDN network on a single system.
+### Pull docker image
 
-Mini-NDN is open and free software licensed under the GPL 3.0 license. Mini-NDN is free to all
-users and developers. For more information about licensing details and limitations,
-please refer to [COPYING.md](COPYING.md).
+   ```bash
+   docker pull enidskybh/qsccp-mininet:qsccp
+   docker pull enidskybh/qsccp-mininet:other
+   ```
 
-The first release of Mini-NDN is developed by members of the NSF-sponsored NDN project team.
-Mini-NDN is open to contribution from the public.
-For more details, please refer to [AUTHORS.rst](AUTHORS.rst).
-Bug reports and feedback are highly appreciated and can be made through our
-[Redmine site](http://redmine.named-data.net/projects/mini-ndn) and the
-[mini-ndn mailing list](http://www.lists.cs.ucla.edu/mailman/listinfo/mini-ndn).
+### Running QSCCP 
 
-### Documentation
+   ```bash
+   docker run -idt --name qsccp --privileged -v path/to/qsccp-mininnet:/mini-ndn enidskybh/qsccp-mininet:qsccp /bin/bash
+   docker exec -it qsccp bash
+   cd /mini-ndn
+   python scenarios/qsccp1.py
+   ```
 
-Please refer to http://minindn.memphis.edu/ or [docs/index.rst](docs/index.rst) for installation, usage, and other documentation.
-The documentation can be built using:
+### Running compare contains qsccp
 
-    ./docs/build.sh
+   ```bash
+   docker run -idt --name qsccp --privileged -v path/to/qsccp-mininnet:/mini-ndn enidskybh/qsccp-mininet:qsccp /bin/bash
+   docker exec -it qsccp bash
+   cd /mini-ndn
+   ./compare_qsccp.sh
+   ```
 
-and is available under `docs/_build/html`.
+### Running other compare scenarios
+
+   ```bash
+   docker run -idt --name qsccp --privileged -v path/to/qsccp-mininnet:/mini-ndn enidskybh/qsccp-mininet:other /bin/bash
+   docker exec -it other bash
+   cd /mini-ndn
+   ./compare_other.sh
+   ```
