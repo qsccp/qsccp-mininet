@@ -1,0 +1,9 @@
+[submodule "dl/ndn-tools"]
+	path = dl/ndn-tools
+	url = https://github.com/qsccp/ndn-tools.git
+[submodule "dl/NFD"]
+	path = dl/NFD
+	url = https://github.com/qsccp/NFD.git
+[submodule "dl/ndn-cxx"]
+	path = dl/ndn-cxx
+	url = https://github.com/qsccp/ndn-cxx.git
